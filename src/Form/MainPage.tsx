@@ -83,7 +83,7 @@ const MainPage = () => {
     // Revoke object URL
     URL.revokeObjectURL(userDataUrl);
   };
-
+  console.log("hyyyy");
   return (
     <div className="px-10 max-w-screen-xl mx-auto">
       <h1 className="text-center text-3xl mt-10">Form</h1>

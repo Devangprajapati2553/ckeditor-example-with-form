@@ -4,6 +4,9 @@ import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import EditSvg from "./EditSvg";
 import { useNavigate } from "react-router-dom";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import "./editorStype.css";
 
 // import 'yoopta-editor/dist/index.css';
 interface FormData {
@@ -16,7 +19,7 @@ function Test() {
 
   const [image, setImage] = useState<string>("");
   const [contentData, setContentData] = useState([]);
-  const [value, setValue] = useState([]);
+  const [value, setValue] = useState("");
   const {
     values,
     errors,
@@ -40,12 +43,47 @@ function Test() {
     },
     onSubmit: async (values) => {
       const newContent = {
-        
         title: values.contenttitle,
         content: values.content,
         separator: values.separator,
-        id:values.contenttitle
+        id: values.contenttitle,
       };
+
+      // if (values.separator == "singleline") {
+      //   console.log(values.content, "EWWW");
+      //   const GetData = values.content.split("<br>");
+      //   const filteredArray = GetData.filter((item) => item.trim() !== "");
+
+      //   filteredArray.forEach((item, index) => {
+      //     const jsonItem = {
+      //       index: index,
+      //       text: item,
+      //       twyllable: true, // You may need to determine this dynamically
+      //       type: "paragraph", // Assuming all items are paragraphs, adjust as needed
+      //       imageFilename: null,
+      //     };
+
+      //     const jsonString = JSON.stringify(jsonItem, null, 2);
+      //     contentZip.file(`block${index}.json`, jsonString);
+      //     // const fileName = `output_${index}.json`;
+
+         
+      //   });
+      // }
+      // if (values.separator == "doubleline") {
+      //   const GetData = values.content.split("<br><br>");
+      //   const filteredArray = GetData.filter((item) => item.trim() !== "");
+      //   const jsonArray = filteredArray.map((item, index) => {
+      //     return {
+      //       index: index,
+      //       text: item,
+      //       // twyllable: true, // You may need to determine this dynamically
+      //       // type: "paragraph", // Assuming all items are paragraphs, adjust as needed
+      //       imageFilename: null,
+      //     };
+      //   });
+      //   console.log(filteredArray, "DDDDDDD double");
+      // }
 
       // Push the values to the state array
       setContentData((prevContentData) => [...prevContentData, newContent]);
@@ -132,8 +170,8 @@ function Test() {
     }
   }, []);
 
-  const HandleAllContent = () => {
-    // Get the values
+  const editorConfiguration = {
+    toolbar: [""],
   };
 
   const navigate = useNavigate();
@@ -156,7 +194,7 @@ function Test() {
                   onClick={() =>
                     navigate("/content", {
                       state: {
-                        id:data?.title,
+                        id: data?.title,
                         title: data?.title,
                         content: data?.content,
                       },
@@ -207,19 +245,26 @@ function Test() {
                   </div>
                 </div>
 
-                <div className=" mt-5 flex items-start gap-20">
+                <div id="form" className="  mt-5 flex items-start gap-20">
                   <label htmlFor="Content">
                     <span className="text-red-500">* </span> Content
                   </label>
                   <div>
-                    <textarea
-                      rows={5}
+                    <CKEditor
+                      editor={ClassicEditor}
+                      data={value}
+                      onChange={(event, editor) => {
+                        console.log(editor.getData(), "WHAs Come");
+                        setFieldValue("content", editor.getData());
+                      }}
+                      config={editorConfiguration}
+                      // rows={5}
                       // type="text"
-                      value={values.content}
-                      onChange={handleChange}
-                      name="content"
+                      // value={values.content}
+                      // onChange={handleChange}
+                      // name="content"
                       id="Content"
-                      className="p-3 min-h-[80px]  pl-5 w-96 border  outline-none  h-10"
+                      className="p-3 min-h-[80px]   pl-5 w-96 min-w-96 border  outline-none  h-10"
                     />
                     <p className="text-xs text-gray-400">
                       insert valid and supported HTML or a plain text
@@ -227,7 +272,7 @@ function Test() {
                   </div>
                 </div>
 
-                {/* <div className="flex items-start gap-20 mt-5">
+                <div className="flex items-start gap-20 mt-5">
                   <label htmlFor="separator">
                     <span className="text-red-500">* </span> Separator
                   </label>
@@ -255,7 +300,7 @@ function Test() {
                       materials
                     </p>
                   </div>
-                </div> */}
+                </div>
                 <div className="flex items-center justify-end">
                   <button
                     type="submit"

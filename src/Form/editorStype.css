@@ -1,0 +1,12 @@
+#form .ck.ck-editor__editable_inline>:last-child {
+    min-width: 363px !important;
+    max-width: 363px !important;
+    max-height: 200px;
+    overflow-y: scroll;
+    overflow: hidden;
+}
+
+#form .ck.ck-editor__editable_inline {
+    height: 172px !important;
+    width: 390px !important;
+}
